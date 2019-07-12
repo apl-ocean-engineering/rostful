@@ -67,11 +67,11 @@ class IndividualServiceProxy:
 			wsres = urllib2.urlopen(wsreq)
 		except Exception, e:
 			rospy.logerr('IndividualServiceProxy::callback: %s.  Exception: %s. Content type: %s, reqs: %s',self.name,e,content_type,reqs)
-			return rosresp
+			return False
 
 		if wsres.getcode() != 200:
 			#TODO: flip out
-			return rosresp
+			return False
 
 		data_str = wsres.read().strip()
 
