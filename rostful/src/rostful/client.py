@@ -369,10 +369,7 @@ class RostfulServiceProxy:
 			except Exception, e:
 				rospy.logerr('RostfulServiceProxy::rosSetup: error waiting for url %s: %s', self.url, e)
 				ret = False
-				rospy.logerr("Network connection lost, shutting down node. TEMPORAL FIX: Make sure that the respawn param is activated")
-				rospy.signal_shutdown('Quit')
-
-
+				
 			if ret:
 				parser = deffile.DefFileParser()
 				parser.add_default_section_parser(deffile.INISectionParser)
