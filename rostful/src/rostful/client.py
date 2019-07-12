@@ -21,6 +21,8 @@ from collections import namedtuple
 
 from .jwt_interface import JwtInterface
 
+_timeout = 5
+
 import time
 
 class IndividualServiceProxy:
@@ -64,7 +66,7 @@ class IndividualServiceProxy:
 		rosresp = self.rostype_resp()
 
 		try:
-			wsres = urllib2.urlopen(wsreq)
+			wsres = urllib2.urlopen(wsreq, timeout = _timeout)
 		except Exception, e:
 			rospy.logerr('IndividualServiceProxy::callback: %s.  Exception: %s. Content type: %s, reqs: %s',self.name,e,content_type,reqs)
 			return False
@@ -162,7 +164,7 @@ class IndividualTopicProxy:
 
 		wsreq = urllib2.Request(self.url.encode('utf-8'), data=reqs, headers={'Content-Type': content_type})
 		try:
-			wsres = urllib2.urlopen(wsreq)
+			wsres = urllib2.urlopen(wsreq, timeout = _timeout)
 		except Exception, e:
 			rospy.logerr('IndividualTopicProxy::callback: Exception: %s. Content type: %s, reqs: %s',e,content_type,reqs)
 			return
@@ -186,7 +188,7 @@ class IndividualTopicProxy:
 			wsreq = urllib2.Request(self.url, headers={'Accept': content_accept})
 			ret_code = 0
 			try:
-				wsres = urllib2.urlopen(wsreq)
+				wsres = urllib2.urlopen(wsreq, timeout = _timeout)
 				ret_code = wsres.getcode()
 			except Exception, e:
 				rospy.logerr("IndividualTopicProxy::publish: Encountered an error while retrieving a message on topic %s: %s\n" % (self.name, str(e)))
@@ -362,7 +364,7 @@ class RostfulServiceProxy:
 			req = urllib2.Request(config_url)
 			ret = True
 			try:
-				res = urllib2.urlopen(req)
+				res = urllib2.urlopen(req, timeout = _timeout)
 				if res.getcode() != 200:
 					rospy.logerr('RostfulServiceProxy::rosSetup: error getting info from url %s', self.url)
 					ret = False
@@ -493,6 +495,7 @@ def clientmain():
 	grp.add_argument('--prefix', help='Specify a prefix for the service and topic names. By default, this is the name given by the web service if it provides one.')
 	grp.add_argument('--no-prefix', action='store_const', const = '', dest='prefix', help='Use the service and topic names as-is as relative names.')
 	parser.add_argument('--rest-prefix-server', default='/', help='The prefix path of the http request to the server, usually starting with a "/".')
+	parser.add_argument('--connection-timeout', default=5, help='Timeout for any petition to the server')
 
 
 	args = parser.parse_args(rospy.myargv()[1:])
@@ -500,7 +503,8 @@ def clientmain():
 	if not args.url.startswith('http'):
 		args.url = 'http://' + args.url
 
-
+	_timeout = args.connection_timeout
+	
 	proxy = RostfulServiceProxy(args.url, remap=args.test, subscribe=args.subscribe, publish_interval = args.publish_interval, binary=args.binary, prefix=args.prefix, use_jwt=args.jwt, jwt_key=args.jwt_key, rest_prefix_server = args.rest_prefix_server)
 
 	rospy.spin()
