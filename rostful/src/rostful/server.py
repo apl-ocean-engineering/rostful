@@ -17,6 +17,7 @@ import json
 import sys
 import re
 from StringIO import StringIO
+import socket
 
 from . import message_conversion as msgconv
 from . import deffile, definitions
@@ -679,3 +680,6 @@ def servermain():
 		rospy.loginfo('rostful_server: Shutting down the server')
 		httpd.socket.close()
 		rospy.signal_shutdown('Closing')
+	except socket.error, e:
+		rospy.logerr('rostful_server: %s', e)
+		exit(-1)
