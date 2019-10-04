@@ -194,8 +194,14 @@ class IndividualTopicProxy:
 				rospy.logerr("IndividualTopicProxy::publish: Encountered an error while retrieving a message on topic %s: %s\n" % (self.name, str(e)))
 
 			if ret_code == 200:
+				data_str = None
+				try:
+					data_str = wsres.read()
+				except urllib2.URLError, e:
+					rospy.logerr("IndividualTopicProxy::publish: urllib2.URLError on topic %s: %s\n" % (self.name, str(e)))
+				except socket.timeout, e:
+					rospy.logerr("IndividualTopicProxy::publish: socket.timeout on topic %s: %s\n" % (self.name, str(e)))
 
-				data_str = wsres.read()
 
 				msg = self.rostype()
 				if wsres.info()['Content-Type'].split(';')[0].strip() == ROS_MSG_MIMETYPE:
@@ -371,7 +377,7 @@ class RostfulServiceProxy:
 			except Exception, e:
 				rospy.logerr('RostfulServiceProxy::rosSetup: error waiting for url %s: %s', self.url, e)
 				ret = False
-				
+
 			if ret:
 				parser = deffile.DefFileParser()
 				parser.add_default_section_parser(deffile.INISectionParser)
@@ -504,7 +510,7 @@ def clientmain():
 		args.url = 'http://' + args.url
 
 	_timeout = args.connection_timeout
-	
+
 	proxy = RostfulServiceProxy(args.url, remap=args.test, subscribe=args.subscribe, publish_interval = args.publish_interval, binary=args.binary, prefix=args.prefix, use_jwt=args.jwt, jwt_key=args.jwt_key, rest_prefix_server = args.rest_prefix_server)
 
 	rospy.spin()
