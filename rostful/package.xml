@@ -22,7 +22,7 @@
   <run_depend>rospy</run_depend>
   <run_depend>actionlib_msgs</run_depend>
   <run_depend>robotnik_msgs</run_depend>
-  <run_depend>rosmon_msgs</run_depend>
+  <run_depend>rosmon</run_depend>
   <run_depend>robot_local_control_msgs</run_depend>
   <run_depend>rcomponent</run_depend>
 

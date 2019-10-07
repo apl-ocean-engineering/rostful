@@ -4,7 +4,7 @@ import os
 
 from rcomponent.rcomponent import RComponent
 from robotnik_msgs.msg import State
-from rosmon_msgs.srv import StartStop
+from rosmon.srv import StartStop
 from robot_local_control_msgs.msg import Status
 
 
@@ -103,7 +103,7 @@ class ClientMonitor(RComponent):
 
 	def restart_rosmon_node_client(self):
 		try:
-			self.restart_rosmon_node(self.rostful_client_node, '', 3)
+			self.restart_rosmon_node(self.rostful_client_node, 3)
 		except rospy.ServiceException, e:
 			rospy.logerr("Failed calling service %s: %s", self.rosmon_service, e)
 
