@@ -114,7 +114,6 @@ class ClientMonitor(RComponent):
 
 	def check_timer_callback(self, data):
 		time_difference = rospy.Time.now() - self.last_message_time
-		rospy.logwarn("Time since last monitored topic msg: %f", time_difference.to_sec())
 		if time_difference.to_sec() > self.timer_threshold:
 			rospy.logwarn("Communication lost for %f seconds. Calling %s to restart the rostful client", time_difference.to_sec(), self.rosmon_service)
 			self.restart_rosmon_node_client()
