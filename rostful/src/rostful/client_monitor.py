@@ -1,6 +1,8 @@
 import rospy
 import time, threading
 import os
+from datetime import datetime
+import pytz
 
 from rcomponent.rcomponent import RComponent
 from robotnik_msgs.msg import State
@@ -115,7 +117,8 @@ class ClientMonitor(RComponent):
 	def check_timer_callback(self, data):
 		time_difference = rospy.Time.now() - self.last_message_time
 		if time_difference.to_sec() > self.timer_threshold:
-			rospy.logwarn("Communication lost for %f seconds. Calling %s to restart the rostful client", time_difference.to_sec(), self.rosmon_service)
+			rospy.logwarn("[%s] Communication lost for %f seconds. Calling %s to restart the rostful client",
+			 datetime.fromtimestamp(rospy.Time.now().to_sec(), pytz.timezone('Europe/Madrid')), time_difference.to_sec(), self.rosmon_service)
 			self.restart_rosmon_node_client()
 			self.last_message_time = rospy.Time.now()
 
