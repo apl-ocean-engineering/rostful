@@ -49,8 +49,8 @@ type_map = {
    "unicode": ["string"],
    "long":    ["uint64"]
 }
-primitive_types = [bool, int, long, float]
-string_types = [str, unicode]
+primitive_types = [bool, int, float]
+string_types = [str, bytes]
 list_types = [list, tuple]
 ros_time_types = ["time", "duration"]
 ros_primitive_types = ["bool", "byte", "char", "int8", "uint8", "int16",
