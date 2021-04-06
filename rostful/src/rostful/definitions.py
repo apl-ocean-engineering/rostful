@@ -73,13 +73,13 @@ def manifest(services, topics, actions, full=False):
     
     if services:
         service_section = deffile.INISection('Services')
-        for service_name, service in services.iteritems():
+        for service_name, service in services.items():
             service_section.fields[service_name] = service.rostype_name
         dfile.add_section(service_section)
     
     if actions:
         action_section = deffile.INISection('Actions')
-        for action_name, action in actions.iteritems():
+        for action_name, action in actions.items():
             action_section.fields[action_name] = action.rostype_name
         dfile.add_section(action_section)
     
@@ -87,7 +87,7 @@ def manifest(services, topics, actions, full=False):
     publish_section = deffile.INISection('Publishes')
     subscribe_section = deffile.INISection('Subscribes')
     
-    for topic_name, topic in topics.iteritems():
+    for topic_name, topic in topics.items():
         if topic.allow_sub:
             publish_section.fields[topic_name] = topic.rostype_name
         if topic.allow_pub:
@@ -101,7 +101,7 @@ def manifest(services, topics, actions, full=False):
         dfile.add_section(subscribe_section)
     
     if full:
-        dfns = get_definitions(services=services.itervalues(), topics=topics.itervalues(), actions=actions.itervalues())
+        dfns = get_definitions(services=services.values(), topics=topics.values(), actions=actions.values())
         [dfile.add_definition(dfn) for dfn in dfns]
     
     return dfile

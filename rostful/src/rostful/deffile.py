@@ -113,7 +113,7 @@ class DefFile(object):
         
         d['Definitions'] = dict([(dfn.type + ':' + dfn.name, dfn.tojson()) for dfn in self.definitions])
         
-        d['Sections'] = dict([(section_name, section.tojson()) for section_name, section in self.sections.iteritems()])
+        d['Sections'] = dict([(section_name, section.tojson()) for section_name, section in self.sections.items()])
         
         return d
     
@@ -139,7 +139,7 @@ class DefFile(object):
             s += dfn.__str__()
             strs.append(s)
         
-        for sec_name, section in self.sections.iteritems():
+        for sec_name, section in self.sections.items():
             s = ''
             sec_name = _clean_string(section.name)
             if sec_name.find(':') != -1:
@@ -253,7 +253,7 @@ class Manifest(object):
         self.fields = strstrdicti(fields or {})
         
     def tojson(self):
-        d = dict(self.fields.iteritems())
+        d = dict(self.fields.items())
         if self.def_type is not None:
             d['Def-Type'] = self.def_type
         return d
@@ -267,7 +267,7 @@ class Manifest(object):
                 strs.append('Include.%s = %s' % (include_type, include_file))
             else:
                 strs.append('Include = %s' % include_file)
-        for key, value in self.fields.iteritems():
+        for key, value in self.fields.items():
             strs.append('%s = %s' % (key,value))
         return '\n'.join(strs)
     
@@ -280,7 +280,7 @@ class Manifest(object):
         return 'Manifest(fields=%s%s%s)' % (repr(self.fields), def_type_str, includes_str)
     
     def __iter__(self):
-        return self.fields.iteritems()
+        return self.fields.items()
     
     def __nonzero__(self):
         return bool(self.fields or self.def_type or self.includes)
@@ -306,22 +306,22 @@ class Manifest(object):
         return self.fields.has_key(key)
 
     def items(self):
-        return [(k, v) for k, v in self.iteritems()]
+        return [(k, v) for k, v in self.items()]
     
     def keys(self):
         return [k for k in self.iterkeys()]
     
     def values(self):
-        return [v for v in self.itervalues()]
+        return [v for v in self.values()]
     
     def iteritems(self):
-        return self.fields.iteritems()
+        return self.fields.items()
         
     def iterkeys(self):
         return self.fields.iterkeys()
         
     def itervalues(self):
-        return self.fields.itervalues()
+        return self.fields.values()
     
     def __setattr__(self, name, value):
         if name == 'fields':
@@ -382,14 +382,14 @@ class INISection(Section):
     FORMAT = 'ini'
     def __init__(self, name, fields=None, discard_none=False):
         Section.__init__(self, name)
-        self.fields = strstrdict((key, value) for key, value in fields.iteritems() if not (value is None and discard_none)) if fields else strstrdict()
+        self.fields = strstrdict((key, value) for key, value in fields.items() if not (value is None and discard_none)) if fields else strstrdict()
     
     def tojson(self):
         return self.fields.copy()
     
     def tostring(self):
         strs = []
-        for key, value in self.fields.iteritems():
+        for key, value in self.fields.items():
             if value.find('\n') != -1:
                 strs.append("%s = |" % key)
                 [strs.append(re.sub(r'=',r'\\=',line)) for line in value.split('\n')]
@@ -400,7 +400,7 @@ class INISection(Section):
     @staticmethod
     def load_ini_dict(section_dict):
         ini = {}
-        for section_name, section in section_dict.iteritems():
+        for section_name, section in section_dict.items():
             if not isinstance(section, INISection): continue
             for key, value in section.fields:
                 ini[section_name + '.' + key] = value
@@ -410,7 +410,7 @@ class INISection(Section):
         return 'INISection(%s, fields=%s)' % (repr(self.name), repr(self.fields))
     
     def __iter__(self):
-        return self.fields.iteritems()
+        return self.fields.items()
     
     def __nonzero__(self):
         return bool(self.fields)
@@ -436,22 +436,22 @@ class INISection(Section):
         return self.fields.has_key(key)
 
     def items(self):
-        return [(k, v) for k, v in self.iteritems()]
+        return [(k, v) for k, v in self.items()]
     
     def keys(self):
         return [k for k in self.iterkeys()]
     
     def values(self):
-        return [v for v in self.itervalues()]
+        return [v for v in self.values()]
     
     def iteritems(self):
-        return self.fields.iteritems()
+        return self.fields.items()
         
     def iterkeys(self):
         return self.fields.iterkeys()
         
     def itervalues(self):
-        return self.fields.itervalues()
+        return self.fields.values()
     
     def __setattr__(self, name, value):
         if name == 'fields':
@@ -603,7 +603,7 @@ class DefFileParser(object):
     
     def get_section_parser(self,name,format,def_file_format,go_easy=False):
         matches = {}
-        for key, parser in self.section_parsers.iteritems():
+        for key, parser in self.section_parsers.items():
             parser_name, parser_format, parser_def_file_format = key
             if (parser_name and parser_name != name) or \
                     (parser_format and parser_format != format) or \
@@ -631,7 +631,7 @@ class DefFileParser(object):
     
     def get_definition_parser(self,dfn_type,name,format,def_file_format,go_easy=False):
         matches = {}
-        for key, parser in self.definition_parsers.iteritems():
+        for key, parser in self.definition_parsers.items():
             parser_def_type, parser_format, parser_def_file_format = key
             if (parser_def_type != dfn_type) or \
                     (parser_format and parser_format != format) or \
@@ -1022,17 +1022,17 @@ def _get_dicti(name, superclass):
             self._data = superclass()
             if arg:
                 if isinstance(arg, dict):
-                    for key, value in arg.iteritems():
+                    for key, value in arg.items():
                         self.__setitem__(key, value)
                 elif isinstance(arg, Iterable):
                     for (key, value) in arg:
                         self.__setitem__(key, value)
             elif kwargs:
-                for key, value in kwargs.iteritems():
+                for key, value in kwargs.items():
                     self.__setitem__(key, value)
         
         def __iter__(self):
-            return self._data.iteritems()
+            return self._data.items()
         
         def __contains__(self, key):
             return self._data.__contains__(key.lower())
@@ -1058,28 +1058,28 @@ def _get_dicti(name, superclass):
                 return False
     
         def items(self):
-            return [(v.key, v.val) for v in self._data.itervalues()]
+            return [(v.key, v.val) for v in self._data.values()]
         
         def keys(self):
-            return [v.key for v in self._data.itervalues()]
+            return [v.key for v in self._data.values()]
         
         def values(self):
-            return [v.val for v in self._data.itervalues()]
+            return [v.val for v in self._data.values()]
         
         def iteritems(self):
-            for v in self._data.itervalues():
+            for v in self._data.values():
                 yield v.key, v.val
             
         def iterkeys(self):
-            for v in self._data.itervalues():
+            for v in self._data.values():
                 yield v.key
             
         def itervalues(self):
-            for v in self._data.itervalues():
+            for v in self._data.values():
                 yield v.val
         
         def copy(self):
-            return dict(self.iteritems())
+            return dict(self.items())
         
         def __str__(self):
             return dict.__str__(self._data)
@@ -1098,13 +1098,13 @@ def _get_strstrdict(name, superclass):
             superclass.__init__(self)
             if arg:
                 if isinstance(arg, dict):
-                    for key, value in arg.iteritems():
+                    for key, value in arg.items():
                         self.__setitem__(key, value)
                 else:
                     for (key, value) in arg:
                         self.__setitem__(key, value)
             elif kwargs:
-                for key, value in kwargs.iteritems():
+                for key, value in kwargs.items():
                     self.__setitem__(key, value)
         
         def __contains__(self, key):
