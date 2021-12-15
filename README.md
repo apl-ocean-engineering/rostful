@@ -1,6 +1,13 @@
 ROStful
 =======
 
+**NOTE:**  This is a fork of the [RobotnikAutomation/rostful](https://github.com/RobotnikAutomation/rostful) fork of the original [rostful](https://github.com/pyros-dev/rostful) project.   Our focus is on developing for **Noetic w/ python3.**  As such we have hard-reset our `main` branch to upstream's `python3` branch and pruned any python2 branches from this repo.
+
+
+
+----
+
+
 ROStful is a lightweight web server for making ROS services, topics, and actions available as RESTful web services. It also provides a client proxy to expose a web service locally over ROS.
 
 ROStful web services primarily use the [rosbridge](http://wiki.ros.org/rosbridge_suite) JSON mapping for ROS messages. However, binary serialized ROS messages can be used to increase performance.
