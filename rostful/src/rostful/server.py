@@ -627,6 +627,7 @@ class RostfulServer:
 		'''
 		if not rospy.is_shutdown():
 			self.add_services(self.args.services)
+
 			self.add_topics(self.args.topics)
 			self.add_topics(self.args.publishes, allow_pub=False)
 			self.add_topics(self.args.subscribes, allow_sub=False)
@@ -645,11 +646,11 @@ def servermain():
 
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument('--services', '--srv', nargs='+', help='Services to advertise')
-	parser.add_argument('--topics', nargs='+', help='Topics to both publish and subscribe')
-	parser.add_argument('--publishes', '--pub', nargs='+', help='Topics to publish via web services')
-	parser.add_argument('--subscribes', '--sub', nargs='+', help='Topics to allowing publishing to via web services')
-	parser.add_argument('--actions', nargs='+', help='Actions to advertise')
+	parser.add_argument('--services', '--srv', nargs='+', action='extend', help='Services to advertise')
+	parser.add_argument('--topics', nargs='+', action='extend', help='Topics to both publish and subscribe')
+	parser.add_argument('--publishes', '--pub', nargs='+', action='extend', help='Topics to publish via web services')
+	parser.add_argument('--subscribes', '--sub', nargs='+', action='extend', help='Topics to allowing publishing to via web services')
+	parser.add_argument('--actions', nargs='+', action='extend', help='Actions to advertise')
 
 	parser.add_argument('--host', default='')
 	parser.add_argument('-p', '--port', type=int, default=8080)
